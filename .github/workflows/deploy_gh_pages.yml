@@ -24,4 +24,5 @@ jobs:
           git config --global user.email "bot@example.com"
           git config --global user.name ${{secrets.GH_USERNAME}}
           git remote set-url origin https://${{secrets.GH_PATH}}@github.com/ssi-anik/github-action-test.git
+          yarn run build
           yarn run deploy
