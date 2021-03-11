@@ -22,19 +22,25 @@ jobs:
         run: |
           echo 'firefox' > file.txt
           zip -r archive-2.zip file.txt
+
+      - name: Get the version
+        id: get_tag
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
       
-      - name: Echo something
+      - name: Tag version
         run: |
-          echo ${{ github.ref }}
+          echo ${{ steps.get_tag.outputs.VERSION }}
       
       - name: Create a new release
         id: create_release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          title: ${{ github.ref }}
+          name: ${{ github.ref }}
           automatic_release_tag: ${{ github.ref }}
           prerelease: false
+          draft: false
           files: |
             archive-1.zip
             archive-2.zip
