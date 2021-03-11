@@ -1,0 +1,46 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+name: Release asset workflow
+
+jobs:
+  release-asset:
+    name: Release asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Create the archive for chrome
+        run: |
+          echo 'chrome' > file.txt
+          zip -r archive-1.zip file.txt
+      
+      - name: Create the archive for firefox
+        run: |
+          echo 'firefox' > file.txt
+          zip -r archive-2.zip file.txt
+      
+      - name: Create a new release
+        id: create_release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          title: ${{ github.ref }}
+          automatic_release_tag: ${{ github.ref }}
+          prerelease: false
+          files: |
+            archive-1.zip
+            archive-2.zip
+      
+      # - name: Upload the asset to the release
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./medium-unlimited.zip
+      #     asset_name: ${{ github.event.repository.name }}.zip # ${{ github.event.repository.name }} - for the project name
+      #     asset_content_type: application/zip
