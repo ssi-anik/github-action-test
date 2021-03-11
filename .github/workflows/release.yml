@@ -23,6 +23,10 @@ jobs:
           echo 'firefox' > file.txt
           zip -r archive-2.zip file.txt
       
+      - name: Echo something
+        run: |
+          echo ${{ github.ref }}
+      
       - name: Create a new release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
